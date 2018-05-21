@@ -62,45 +62,27 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     """
     # TODO: Implement function
 
-    #1x1 convolved
-    _1x1_layer3 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 1, padding='same',
-                                  name="_1x1_layer3",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+        #1x1 convolved
+    l_1x1_layer3 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 1, padding='same', name="l_1x1_layer3",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
-    _1x1_layer4 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 1, padding='same',
-                                  name="_1x1_layer4",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    l_1x1_layer4 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 1, padding='same',name="l_1x1_layer4",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
-    _1x1_layer7 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 1, padding='same',
-                                  name="_1x1_layer7",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    l_1x1_layer7 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 1, padding='same',name="l_1x1_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Upsample the layer 7
-    upsample_layer7 = tf.layers.conv2d_transpose(_1x1_layer7, num_classes, 3, 2, padding='same',
-                                  name="upsample_layer7",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer7 = tf.layers.conv2d_transpose(l_1x1_layer7, num_classes, 3, 2, padding='same',name="upsample_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Skip Connection Layer 4 and Layer 7
-    _4_7_layer = tf.add(upsample_layer7, _1x1_layer4)
+    l_4_7_layer = tf.add(upsample_layer7, l_1x1_layer4)
 
     #Upsample skip connection result - _4_7_layer
-    upsample_layer4_7 = tf.layers.conv2d_transpose(_4_7_layer, num_classes, 3, 2, padding='same',
-                                  name="upsample_layer4_7",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer4_7 = tf.layers.conv2d_transpose(l_4_7_layer, num_classes, 3, 2, padding='same',name="upsample_layer4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Skip connection of Layer 3 to _4_7_4_7_layer
-    _3_4_7_layer = tf.add(upsample_layer4_7, _1x1_layer3)
+    l_3_4_7_layer = tf.add(upsample_layer4_7, l_1x1_layer3)
 
     #Upsample the skip connection result - _3_4_7_layer
-    upsample_layer3_4_7 = tf.layers.conv2d_transpose(_3_4_7_layer, num_classes, 16, 8, padding='same',
-                                  name="upsample_layer3_4_7",
-                                  kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),
-                                  kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer3_4_7 = tf.layers.conv2d_transpose(l_3_4_7_layer, num_classes, 16, 8, padding='same',name="upsample_layer3_4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
 
     #tf.Print(output, [tf.shape(output)[1:3]])
@@ -161,8 +143,8 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
 
     sess.run(tf.global_variables_initializer())
 
-    for epoch in epochs:
-        print("EPOCH {} ...".format(i+1))
+    for epoch in range(epochs):
+        print("EPOCH {} ...".format(epoch+1))
         cumulative_loss = 0.0
         counter = 0
 
@@ -173,7 +155,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
                                keep_prob: 0.5, learning_rate: 0.0003})
             counter += 1
             cumulative_loss += loss
-            print("Loss = {:.3f}".format(loss), "in epoch ", epoch, " at batch ", counter)
+            print("Loss = {:.3f}".format(loss), "in epoch ", (epoch+1), " at batch ", counter)
 
         print("The average loss = {:.3f}".format(cumulative_loss/counter))
 
@@ -189,7 +171,7 @@ def run():
     tests.test_for_kitti_dataset(data_dir)
 
     # Download pretrained vgg model
-    #helper.maybe_download_pretrained_vgg(data_dir)
+    helper.maybe_download_pretrained_vgg(data_dir)
 
     # OPTIONAL: Train and Inference on the cityscapes dataset instead of the Kitti dataset.
     # You'll need a GPU with at least 10 teraFLOPS to train on.
