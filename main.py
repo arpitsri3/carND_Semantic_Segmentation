@@ -63,26 +63,26 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     # TODO: Implement function
 
         #1x1 convolved
-    l_1x1_layer3 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 1, padding='same', name="l_1x1_layer3",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    l_1x1_layer3 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 1, padding='same', name="l_1x1_layer3",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
-    l_1x1_layer4 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 1, padding='same',name="l_1x1_layer4",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    l_1x1_layer4 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 1, padding='same',name="l_1x1_layer4",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
-    l_1x1_layer7 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 1, padding='same',name="l_1x1_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    l_1x1_layer7 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 1, padding='same',name="l_1x1_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Upsample the layer 7
-    upsample_layer7 = tf.layers.conv2d_transpose(l_1x1_layer7, num_classes, 3, 2, padding='same',name="upsample_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer7 = tf.layers.conv2d_transpose(l_1x1_layer7, num_classes, 3, 2, padding='same',name="upsample_layer7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Skip Connection Layer 4 and Layer 7
     l_4_7_layer = tf.add(upsample_layer7, l_1x1_layer4)
 
     #Upsample skip connection result - _4_7_layer
-    upsample_layer4_7 = tf.layers.conv2d_transpose(l_4_7_layer, num_classes, 3, 2, padding='same',name="upsample_layer4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer4_7 = tf.layers.conv2d_transpose(l_4_7_layer, num_classes, 3, 2, padding='same',name="upsample_layer4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
     #Skip connection of Layer 3 to _4_7_4_7_layer
     l_3_4_7_layer = tf.add(upsample_layer4_7, l_1x1_layer3)
 
     #Upsample the skip connection result - _3_4_7_layer
-    upsample_layer3_4_7 = tf.layers.conv2d_transpose(l_3_4_7_layer, num_classes, 16, 8, padding='same',name="upsample_layer3_4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.03),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
+    upsample_layer3_4_7 = tf.layers.conv2d_transpose(l_3_4_7_layer, num_classes, 16, 8, padding='same',name="upsample_layer3_4_7",kernel_initializer=tf.truncated_normal_initializer(stddev=0.01),kernel_regularizer=tf.contrib.layers.l2_regularizer(1e-3))
 
 
     #tf.Print(output, [tf.shape(output)[1:3]])
@@ -187,8 +187,8 @@ def run():
         #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
         # TODO: Build NN using load_vgg, layers, and optimize function
-        epochs = 36
-        batch_size = 3
+        epochs = 20
+        batch_size = 5
 
         #Placeholder Tensors
 
